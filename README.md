@@ -130,9 +130,9 @@ Argumento | Descrição | Padrão
 --commits | Quantas sugestões de commit gerar | 5
 
 Exemplo:
-
+```bash
 ai-commit --model gpt-5-mini --recent-commits 10 --commits 3
-
+```
 ---
 
 ## 🧾 Licença
