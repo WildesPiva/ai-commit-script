@@ -25,5 +25,4 @@ Ele segue o padrão **Semantic Commit Messages** e inclui suporte a **autoatuali
 1. **Baixe o script:**
 
 ```bash
-curl -O https://raw.githubusercontent.com/wildespiva/ai-commit-script/main/ai-commit.py
-chmod +x ai-commit.py
+install.sh
