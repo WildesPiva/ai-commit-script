@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+
 import re
 import os
 import sys
@@ -8,10 +9,11 @@ import hashlib
 import ollama
 import subprocess
 import argparse
+import ssl
+
+ssl._create_default_https_context = ssl._create_unverified_context
 
 from openai import OpenAI
-
-client = OpenAI(api_key=os.getenv('OPEN_AI_KEY'))
 
 # URL do script remoto no GitHub
 REMOTE_URL = "https://raw.githubusercontent.com/wildespiva/ai-commit-script/main/ai-commit.py"
@@ -30,7 +32,7 @@ def get_remote_version(code: str) -> str:
 
 def download_remote_script() -> str:
     """Baixa o script remoto e retorna o conteúdo."""
-    with urllib.request.urlopen(REMOTE_URL) as response:
+    with urllib.request.urlopen(REMOTE_URL, ) as response:
         return response.read().decode("utf-8")
 
 
@@ -210,6 +212,7 @@ commit message goes here
     # Make the API call with system and user messages
 
     if str(model).startswith('gpt'):
+        client = OpenAI()
         response = client.responses.create(
             # model="gpt-5-mini",
             model=model,
@@ -348,4 +351,5 @@ def main():
 
 
 if __name__ == "__main__":
+    self_update()
     main()
