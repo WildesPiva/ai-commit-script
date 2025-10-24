@@ -4,8 +4,6 @@ import re
 import os
 import sys
 import urllib.request
-import tempfile
-import hashlib
 import ollama
 import subprocess
 import argparse
@@ -19,7 +17,7 @@ from openai import OpenAI
 REMOTE_URL = "https://raw.githubusercontent.com/wildespiva/ai-commit-script/main/ai-commit.py"
 
 # Versão local (você pode atualizar manualmente aqui)
-__version__ = "1.0.1"
+__version__ = "1.0.2"
 
 
 def get_remote_version(code: str) -> str:
