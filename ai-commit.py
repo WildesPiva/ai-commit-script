@@ -3,21 +3,24 @@
 import re
 import os
 import sys
+import time
 import urllib.request
-import ollama
+from pathlib import Path
 import subprocess
 import argparse
 import ssl
 
+import ollama
+from openai import OpenAI
+
 ssl._create_default_https_context = ssl._create_unverified_context
 
-from openai import OpenAI
 
 # URL do script remoto no GitHub
 REMOTE_URL = "https://raw.githubusercontent.com/wildespiva/ai-commit-script/main/ai-commit.py"
 
-# Versão local (você pode atualizar manualmente aqui)
-__version__ = "1.0.2"
+# Versão local
+__version__ = "1.0.3"
 
 
 def get_remote_version(code: str) -> str:
@@ -30,8 +33,22 @@ def get_remote_version(code: str) -> str:
 
 def download_remote_script() -> str:
     """Baixa o script remoto e retorna o conteúdo."""
-    with urllib.request.urlopen(REMOTE_URL, ) as response:
-        return response.read().decode("utf-8")
+    req = urllib.request.Request(
+        REMOTE_URL,
+        headers={"User-Agent": "Mozilla/5.0 (compatible; ai-commit-script/1.0; +https://github.com/wildespiva/ai-commit-script)"}
+    )
+    try:
+        with urllib.request.urlopen(req) as response:
+            return response.read().decode("utf-8")
+    except urllib.error.HTTPError as e:
+        if e.code == 429:
+            print("⚠️ Limite de requisições do GitHub atingido (HTTP 429). Pulando atualização por 24h.")
+        else:
+            print(f"⚠️ Falha HTTP ao baixar atualização: {e}")
+        return None
+    except Exception as e:
+        print(f"⚠️ Erro ao baixar script remoto: {e}")
+        return None
 
 
 def update_script(new_code: str):
@@ -53,20 +70,42 @@ def update_script(new_code: str):
 
 
 def self_update():
-    """Verifica e aplica atualização, se necessário."""
+    """Verifica e aplica atualização (no máximo 1 vez por dia)."""
+    cache_dir = Path.home() / ".cache" / "ai-commit"
+    cache_dir.mkdir(parents=True, exist_ok=True)
+    cache_file = cache_dir / "last_check"
+
+    last_check = cache_file.stat().st_mtime if cache_file.exists() else 0
+    one_day = 24 * 3600
+
+    # Verifica só uma vez por dia
+    if time.time() - last_check < one_day:
+        print("🕒 Última verificação foi há menos de 24h, pulando checagem de atualização.")
+        return
+
+    cache_file.touch()  # Atualiza o timestamp mesmo se falhar depois
+
     try:
         print("🔍 Verificando nova versão...")
         remote_code = download_remote_script()
-        remote_version = get_remote_version(remote_code)
+        if not remote_code:
+            print("⚠️ Não foi possível verificar atualização agora.")
+            return
 
+        remote_version = get_remote_version(remote_code)
         if remote_version > __version__:
+            script_path = Path(os.path.abspath(sys.argv[0]))
+            if not os.access(script_path, os.W_OK):
+                print(f"⚠️ Sem permissão para atualizar {script_path}. Rode com 'sudo' ou reinstale em ~/.local/bin")
+                return
+
             print(f"🚀 Nova versão encontrada ({remote_version}), atualizando...")
             update_script(remote_code)
         else:
             print(f"✅ Já está na versão mais recente ({__version__}).")
+
     except Exception as e:
         print(f"⚠️ Falha ao verificar atualização: {e}")
-
 
 
 def clean_message(commit_message):
