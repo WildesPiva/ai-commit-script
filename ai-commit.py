@@ -19,7 +19,7 @@ from openai import OpenAI
 REMOTE_URL = "https://raw.githubusercontent.com/wildespiva/ai-commit-script/main/ai-commit.py"
 
 # Versão local (você pode atualizar manualmente aqui)
-__version__ = "1.0.0"
+__version__ = "1.0.1"
 
 
 def get_remote_version(code: str) -> str:
@@ -259,8 +259,8 @@ def main():
     )
     parser.add_argument(
         "--model",
-        default="qwen2.5-coder:1.5b",
-        help="Model to use for commit generation (default: qwen2.5-coder:1.5b)"
+        default="qwen2.5-coder:3b",
+        help="Model to use for commit generation (default: qwen2.5-coder:3b)"
     )
     parser.add_argument(
         "--recent-commits",
