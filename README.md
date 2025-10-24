@@ -26,11 +26,15 @@ Ele segue o padrão Semantic Commit Messages e inclui suporte a autoatualizaçã
 
 Você pode instalar de forma global no terminal sem precisar de sudo:
 
+```bash
 bash -c "$(curl -fsSL https://raw.githubusercontent.com/WildesPiva/ai-commit-script/main/install.sh)"
+```
 
 Alternativa com wget:
 
+```bash
 bash -c "$(wget -qO- https://raw.githubusercontent.com/WildesPiva/ai-commit-script/main/install.sh)"
+```
 
 O script faz:
 1. Cria ~/.local/bin (se não existir)  
@@ -40,29 +44,38 @@ O script faz:
 
 Depois disso, você poderá rodar o comando globalmente:
 
+```bash
 ai-commit
-
+```
 ---
 
 ### 2. Manual (opcional)
 
 1. Baixe o script:
 
+```bash
 curl -fsSL https://raw.githubusercontent.com/WildesPiva/ai-commit-script/main/ai-commit.py -o ~/ai-commit
+```
 
 2. Mova para ~/.local/bin:
 
+```bash
 mkdir -p ~/.local/bin
 mv ~/ai-commit ~/.local/bin/ai-commit
 chmod +x ~/.local/bin/ai-commit
+```
 
 3. Verifique se ~/.local/bin está no PATH:
 
+```bash
 echo $PATH | grep -q "$HOME/.local/bin" && echo "PATH OK" || echo "Adicione export PATH=\"$HOME/.local/bin:\$PATH\" ao seu shell"
+```
 
 4. Execute:
 
+```bash
 ai-commit
+```
 
 ---
 
@@ -70,11 +83,15 @@ ai-commit
 
 1. Faça suas alterações normalmente:
 
+```bash
 git add .
+```
 
 2. Rode o script:
 
+```bash
 ai-commit
+```
 
 3. Escolha uma das sugestões ou regenere:
 
